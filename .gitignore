@@ -1,0 +1,11 @@
+# Pictures
+*.jpg
+*.png
+*.bmp
+
+# Video files
+*.mp4
+*.avi
+*.mov
+*.mpg
+*.wmv
