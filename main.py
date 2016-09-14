@@ -9,10 +9,10 @@ command = ''
 
 def help_screen():
     print("\n### HELP ###")
-    print("> startrec - Start recording")
-    print("> stoprec - Stop recording")
-    print("> takepic - Take picture")
-    print("> exit - Exit the program\n")
+    print(">> startrec - Start recording")
+    print(">> stoprec - Stop recording")
+    print(">> takepic - Take picture")
+    print(">> exit - Exit the program\n")
 
 def shut_down():
     cap.release()
@@ -20,6 +20,7 @@ def shut_down():
 
 def take_picture(name, picture):
     cv2.imwrite(name, picture)
+    #print("\nPicture is saved.")
 
 def command_line():
     global TAKE_PICTURE, EXIT
@@ -30,8 +31,9 @@ def command_line():
         if command == 'help':
             help_screen()
         elif command == 'exit': 
+            EXIT = True
             shut_down()
-        elif command == 'takepic': # TODO prosledi nekako frame
+        elif command == 'takepic':
             TAKE_PICTURE = True
 
 def frame_loading():
@@ -41,7 +43,7 @@ def frame_loading():
     command_line_thread.daemon = True
     command_line_thread.start()
 
-    while True:
+    while not EXIT:
         ret, frame = cap.read()  
         cv2.imshow('frame', frame)            
 
@@ -49,7 +51,7 @@ def frame_loading():
             take_picture('slika.png', frame)
             TAKE_PICTURE = False
 
-        if cv2.waitKey(1) & 0xFF == ord('q') or EXIT:
+        if cv2.waitKey(1) & 0xFF == ord('q'):
             shut_down()
             break
 
