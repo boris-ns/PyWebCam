@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 from threading import Thread
 
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(0) # If it doesn't work, try parsing 1 instead 0
 EXIT = False
 TAKE_PICTURE = False
 command = ''
@@ -20,7 +20,6 @@ def shut_down():
 
 def take_picture(name, picture):
     cv2.imwrite(name, picture)
-    #print("\nPicture is saved.")
 
 def command_line():
     global TAKE_PICTURE, EXIT
@@ -31,9 +30,11 @@ def command_line():
         if command == 'help':
             help_screen()
         elif command == 'exit': 
+            print("Exiting the program...")
             EXIT = True
             shut_down()
         elif command == 'takepic':
+            print("Taking picture...")
             TAKE_PICTURE = True
 
 def frame_loading():
