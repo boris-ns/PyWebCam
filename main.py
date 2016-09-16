@@ -2,9 +2,16 @@ import cv2
 import numpy as np
 from threading import Thread
 
-cap = cv2.VideoCapture(0) # If it doesn't work, try parsing 1 instead 0
+cap = cv2.VideoCapture(1) # If it doesn't work, try parsing 1 instead 0
+
+# Recording parameters
+fourcc = cv2.VideoWriter_fourcc(*'XVID')
+out = cv2.VideoWriter('video.avi', fourcc, 20.0, (640, 480))
+
 EXIT = False
 TAKE_PICTURE = False
+START_RECORDING = False
+STOP_RECORDING = False
 command = ''
 
 def help_screen():
@@ -22,7 +29,7 @@ def take_picture(name, picture):
     cv2.imwrite(name, picture)
 
 def command_line():
-    global TAKE_PICTURE, EXIT
+    global TAKE_PICTURE, EXIT, START_RECORDING, STOP_RECORDING
 
     while True:
         command = input("> ")
@@ -36,14 +43,23 @@ def command_line():
         elif command == 'takepic':
             print("Taking picture...")
             TAKE_PICTURE = True
+        elif command == 'startrec':
+            print("Recording started...")
+            START_RECORDING = True
+        elif command == 'stoprec':
+            print("Recording stopped.")
+            STOP_RECORDING = True
+            
 
 def frame_loading():
-    global TAKE_PICTURE, EXIT
+    global TAKE_PICTURE, EXIT, START_RECORDING, STOP_RECORDING
 
+    # Command line thread
     command_line_thread = Thread(target=command_line)
     command_line_thread.daemon = True
     command_line_thread.start()
 
+    # Main loop
     while not EXIT:
         ret, frame = cap.read()  
         cv2.imshow('frame', frame)            
@@ -51,6 +67,12 @@ def frame_loading():
         if TAKE_PICTURE:
             take_picture('slika.png', frame)
             TAKE_PICTURE = False
+        elif START_RECORDING:
+            out.write(frame)
+        elif STOP_RECORDING:
+            out.release()
+            START_RECORDING = False
+            STOP_RECORDING = False
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             shut_down()
