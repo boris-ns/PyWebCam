@@ -4,10 +4,6 @@ from threading import Thread
 
 cap = cv2.VideoCapture(1) # If it doesn't work, try parsing 1 instead 0
 
-# Recording parameters
-fourcc = cv2.VideoWriter_fourcc(*'XVID')
-out = cv2.VideoWriter('video.avi', fourcc, 20.0, (640, 480))
-
 EXIT = False
 TAKE_PICTURE = False
 START_RECORDING = False
@@ -49,6 +45,7 @@ def command_line():
         elif command == 'stoprec':
             print("Recording stopped.")
             STOP_RECORDING = True
+            START_RECORDING = False
             
 
 def frame_loading():
@@ -59,6 +56,8 @@ def frame_loading():
     command_line_thread.daemon = True
     command_line_thread.start()
 
+    out = cv2.VideoWriter('video.avi', cv2.VideoWriter_fourcc(*'XVID'), 20.0, (640, 480))  
+
     # Main loop
     while not EXIT:
         ret, frame = cap.read()  
@@ -67,11 +66,11 @@ def frame_loading():
         if TAKE_PICTURE:
             take_picture('slika.png', frame)
             TAKE_PICTURE = False
-        elif START_RECORDING:
+        elif START_RECORDING:              
             out.write(frame)
         elif STOP_RECORDING:
+            print("staloo")
             out.release()
-            START_RECORDING = False
             STOP_RECORDING = False
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
