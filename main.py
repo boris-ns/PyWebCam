@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import time
 from threading import Thread
 
 cap = cv2.VideoCapture(1) # If it doesn't work, try parsing 1 instead 0
@@ -79,10 +80,15 @@ def frame_loading():
     #out_gray = cv2.VideoWriter('video_gray.avi', cv2.VideoWriter_fourcc(*'XVID'), 20.0, (640, 480))  
     #out_rgb = cv2.VideoWriter('video_rgb.avi', cv2.VideoWriter_fourcc(*'XVID'), 20.0, (640, 480))  
 
+    font = cv2.FONT_HERSHEY_COMPLEX
+
     # Main loop
     while not EXIT:
         ret, frame = cap.read()  
         
+        currentTime = time.strftime("%H %M %S")
+        cv2.putText(frame, currentTime, (0,40), font, 1, (255, 255, 255), 2, cv2.LINE_AA)
+
         cv2.imshow('Normal mode', frame)  
 
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)    
